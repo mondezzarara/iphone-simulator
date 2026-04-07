@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Test Player</title>
+</head>
+<body>
+<h2>Test Player Audio</h2>
+<audio controls>
+  <source src="./musica/IdeeValide.mp3" type="audio/mpeg">
+  Il tuo browser non supporta l'audio.
+</audio>
+</body>
+</html>
