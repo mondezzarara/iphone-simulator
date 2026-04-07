@@ -1,27 +1,33 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <title>iPhone Simulator</title>
-
 <style>
+/* BODY */
 body {
+  margin: 0;
   background: #111;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
 }
 
+/* IPHONE BOX */
 .iphone {
   width: 300px;
   height: 600px;
   border-radius: 40px;
   background: black;
   padding: 10px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
+  position: relative;
+  overflow: hidden;
 }
 
+/* SCHERMO */
 .screen {
   width: 100%;
   height: 100%;
@@ -30,7 +36,7 @@ body {
   position: relative;
 }
 
-/* LOCK */
+/* LOCK SCREEN */
 .lock-screen {
   position: absolute;
   width: 100%;
@@ -54,9 +60,10 @@ body {
   padding: 10px;
   border-radius: 20px;
   cursor: pointer;
+  user-select: none;
 }
 
-/* HOME */
+/* HOME SCREEN */
 .home {
   display: none;
   position: absolute;
@@ -64,6 +71,7 @@ body {
   height: 100%;
   background: linear-gradient(#3a7bd5, #00d2ff);
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .apps {
@@ -81,9 +89,11 @@ body {
   align-items: center;
   font-size: 12px;
   cursor: pointer;
+  text-align: center;
+  user-select: none;
 }
 
-/* APP SCREEN */
+/* APP SCREENS */
 .app-screen {
   display: none;
   position: absolute;
@@ -91,6 +101,8 @@ body {
   height: 100%;
   background: white;
   padding: 20px;
+  box-sizing: border-box;
+  overflow: auto;
 }
 
 .back {
@@ -99,22 +111,42 @@ body {
   left: 10px;
   cursor: pointer;
   color: blue;
+  font-weight: bold;
+}
+textarea {
+  width: 100%;
+  height: 80%;
+}
+ul {
+  padding-left: 20px;
+}
+li {
+  margin: 10px 0;
+  cursor: pointer;
+  color: #007aff;
+  list-style: none;
+}
+li:hover {
+  text-decoration: underline;
+}
+audio {
+  width: 100%;
+  margin-top: 20px;
 }
 </style>
-
 </head>
 <body>
 
 <div class="iphone">
   <div class="screen">
 
-    <!-- LOCK -->
+    <!-- LOCK SCREEN -->
     <div class="lock-screen" id="lock">
-      <div class="time" id="time"></div>
+      <div class="time" id="time">12:00</div>
       <div class="unlock" onclick="unlock()">Scorri per sbloccare</div>
     </div>
 
-    <!-- HOME -->
+    <!-- HOME SCREEN -->
     <div class="home" id="home">
       <div class="apps">
         <div class="app" onclick="openApp('telefono')">Telefono</div>
@@ -127,55 +159,52 @@ body {
 
     <!-- APP TELEFONO -->
     <div class="app-screen" id="telefono">
-      <div class="back" onclick="goHome()">←</div>
+      <div class="back" onclick="goHome()">← Home</div>
       <h2>Telefono</h2>
-      <p>Qui aggiungerai le chiamate</p>
+      <p>Qui potrai aggiungere chiamate in futuro</p>
     </div>
 
-    <!-- MESSAGGI -->
+    <!-- APP MESSAGGI -->
     <div class="app-screen" id="messaggi">
-      <div class="back" onclick="goHome()">←</div>
+      <div class="back" onclick="goHome()">← Home</div>
       <h2>Messaggi</h2>
-      <p>Chat in arrivo</p>
+      <p>Chat in arrivo...</p>
     </div>
 
-    <!-- FOTO -->
+    <!-- APP FOTO -->
     <div class="app-screen" id="foto">
-      <div class="back" onclick="goHome()">←</div>
+      <div class="back" onclick="goHome()">← Home</div>
       <h2>Foto</h2>
-      <p>Galleria</p>
+      <p>Galleria vuota</p>
     </div>
 
-    <!-- NOTE -->
+    <!-- APP NOTE -->
     <div class="app-screen" id="note">
-      <div class="back" onclick="goHome()">←</div>
+      <div class="back" onclick="goHome()">← Home</div>
       <h2>Note</h2>
-      <textarea style="width:100%;height:80%;"></textarea>
+      <textarea placeholder="Scrivi qui le tue note..."></textarea>
     </div>
 
-    <!-- MUSICA -->
+    <!-- APP MUSICA -->
     <div class="app-screen" id="musica">
-      <div class="back" onclick="goHome()">←</div>
+      <div class="back" onclick="goHome()">← Home</div>
       <h2>Musica</h2>
-
+      <p>Seleziona una canzone:</p>
       <ul>
-        <li onclick="playSong('song1')">idee valide</li>
-        <li onclick="playSong('song2')">Canzone 2</li>
+        <li onclick="playSong('ideeValide')">Idee Valide</li>
       </ul>
-
-      <audio id="player" controls style="width:100%; margin-top:20px;"></audio>
+      <audio id="player" controls></audio>
     </div>
 
   </div>
 </div>
 
 <script>
-
-// ORARIO
+// ORARIO DINAMICO
 function updateTime() {
-  let now = new Date();
-  let h = now.getHours().toString().padStart(2, '0');
-  let m = now.getMinutes().toString().padStart(2, '0');
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
   document.getElementById("time").innerText = h + ":" + m;
 }
 setInterval(updateTime, 1000);
@@ -193,25 +222,21 @@ function openApp(id) {
   document.getElementById(id).style.display = "block";
 }
 
-// TORNA HOME
+// TORNA ALLA HOME
 function goHome() {
-  document.querySelectorAll(".app-screen").forEach(el => el.style.display = "none");
-  document.getElementById("home").style.display = "block";
+  document.querySelectorAll(".app-screen").forEach(el => el.style.display="none");
+  document.getElementById("home").style.display="block";
 }
 
 // MUSICA
 function playSong(song) {
   const player = document.getElementById("player");
-
   const songs = {
-    song1: "musica/IdeeValide.mp3",
-    song2: "musica/song2.mp3"
+    ideeValide: "musica/IdeeValide.mp3"
   };
-
   player.src = songs[song];
   player.play();
 }
-
 </script>
 
 </body>
