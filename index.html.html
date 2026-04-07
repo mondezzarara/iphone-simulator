@@ -1,0 +1,218 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>iPhone Simulator</title>
+
+<style>
+body {
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial;
+}
+
+.iphone {
+  width: 300px;
+  height: 600px;
+  border-radius: 40px;
+  background: black;
+  padding: 10px;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* LOCK */
+.lock-screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#1e3c72, #2a5298);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.time {
+  font-size: 40px;
+  margin-top: 40px;
+}
+
+.unlock {
+  background: rgba(255,255,255,0.2);
+  margin: 20px;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* HOME */
+.home {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#3a7bd5, #00d2ff);
+  padding: 20px;
+}
+
+.apps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.app {
+  background: white;
+  border-radius: 15px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* APP SCREEN */
+.app-screen {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: white;
+  padding: 20px;
+}
+
+.back {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+  color: blue;
+}
+</style>
+
+</head>
+<body>
+
+<div class="iphone">
+  <div class="screen">
+
+    <!-- LOCK -->
+    <div class="lock-screen" id="lock">
+      <div class="time" id="time"></div>
+      <div class="unlock" onclick="unlock()">Scorri per sbloccare</div>
+    </div>
+
+    <!-- HOME -->
+    <div class="home" id="home">
+      <div class="apps">
+        <div class="app" onclick="openApp('telefono')">Telefono</div>
+        <div class="app" onclick="openApp('messaggi')">Messaggi</div>
+        <div class="app" onclick="openApp('foto')">Foto</div>
+        <div class="app" onclick="openApp('note')">Note</div>
+        <div class="app" onclick="openApp('musica')">Musica</div>
+      </div>
+    </div>
+
+    <!-- APP TELEFONO -->
+    <div class="app-screen" id="telefono">
+      <div class="back" onclick="goHome()">←</div>
+      <h2>Telefono</h2>
+      <p>Qui aggiungerai le chiamate</p>
+    </div>
+
+    <!-- MESSAGGI -->
+    <div class="app-screen" id="messaggi">
+      <div class="back" onclick="goHome()">←</div>
+      <h2>Messaggi</h2>
+      <p>Chat in arrivo</p>
+    </div>
+
+    <!-- FOTO -->
+    <div class="app-screen" id="foto">
+      <div class="back" onclick="goHome()">←</div>
+      <h2>Foto</h2>
+      <p>Galleria</p>
+    </div>
+
+    <!-- NOTE -->
+    <div class="app-screen" id="note">
+      <div class="back" onclick="goHome()">←</div>
+      <h2>Note</h2>
+      <textarea style="width:100%;height:80%;"></textarea>
+    </div>
+
+    <!-- MUSICA -->
+    <div class="app-screen" id="musica">
+      <div class="back" onclick="goHome()">←</div>
+      <h2>Musica</h2>
+
+      <ul>
+        <li onclick="playSong('song1')">Canzone 1</li>
+        <li onclick="playSong('song2')">Canzone 2</li>
+      </ul>
+
+      <audio id="player" controls style="width:100%; margin-top:20px;"></audio>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+// ORARIO
+function updateTime() {
+  let now = new Date();
+  let h = now.getHours().toString().padStart(2, '0');
+  let m = now.getMinutes().toString().padStart(2, '0');
+  document.getElementById("time").innerText = h + ":" + m;
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// SBLOCCO
+function unlock() {
+  document.getElementById("lock").style.display = "none";
+  document.getElementById("home").style.display = "block";
+}
+
+// APRI APP
+function openApp(id) {
+  document.getElementById("home").style.display = "none";
+  document.getElementById(id).style.display = "block";
+}
+
+// TORNA HOME
+function goHome() {
+  document.querySelectorAll(".app-screen").forEach(el => el.style.display = "none");
+  document.getElementById("home").style.display = "block";
+}
+
+// MUSICA
+function playSong(song) {
+  const player = document.getElementById("player");
+
+  const songs = {
+    song1: "musica/song1.mp3",
+    song2: "musica/song2.mp3"
+  };
+
+  player.src = songs[song];
+  player.play();
+}
+
+</script>
+
+</body>
+</html>
