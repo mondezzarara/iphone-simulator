@@ -7,14 +7,15 @@
 <style>
 body {
   margin:0;
-  background:#111;
+  background:#000;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
-  font-family:Arial;
+  font-family:-apple-system, Arial;
 }
 
+/* IPHONE */
 .iphone {
   width:320px;
   height:640px;
@@ -32,7 +33,7 @@ body {
 }
 
 /* LOCK */
-.lock-screen {
+.lock {
   position:absolute;
   width:100%;
   height:100%;
@@ -60,48 +61,46 @@ body {
   position:absolute;
   width:100%;
   height:100%;
-  background:linear-gradient(#000,#222);
+  background:url("https://picsum.photos/400/800?blur=3");
+  background-size:cover;
   padding:20px;
 }
 
-.app {
-  background:white;
-  border-radius:15px;
-  height:60px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+/* ICONA APP */
+.app-icon {
+  width:65px;
+  text-align:center;
+  color:white;
+  font-size:12px;
   cursor:pointer;
 }
 
-/* MUSIC APP */
-.music {
+.icon-box {
+  width:60px;
+  height:60px;
+  border-radius:15px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:auto;
+  font-size:25px;
+}
+
+/* icona musica stile iPhone */
+.music-icon {
+  background:linear-gradient(135deg,#ff2d55,#ff9500);
+}
+
+/* APP MUSIC */
+.music-app {
   display:none;
   position:absolute;
   width:100%;
   height:100%;
   background:#000;
   color:white;
-  padding:15px;
   overflow:auto;
-}
-
-.song {
-  display:flex;
-  align-items:center;
-  margin-bottom:15px;
-  cursor:pointer;
-}
-
-.song img {
-  width:50px;
-  height:50px;
-  border-radius:8px;
-  margin-right:10px;
-}
-
-.song-title {
-  font-size:14px;
+  padding:15px;
 }
 
 .back {
@@ -110,11 +109,33 @@ body {
   margin-bottom:10px;
 }
 
+/* stile apple music */
+.album {
+  margin-bottom:20px;
+  cursor:pointer;
+}
+
+.album img {
+  width:100%;
+  border-radius:12px;
+}
+
+.album-title {
+  margin-top:5px;
+  font-size:14px;
+}
+
+.album-artist {
+  font-size:12px;
+  color:#aaa;
+}
+
 audio {
   width:100%;
-  margin-top:15px;
+  margin-top:10px;
 }
 </style>
+
 </head>
 
 <body>
@@ -123,26 +144,29 @@ audio {
 <div class="screen">
 
 <!-- LOCK -->
-<div class="lock-screen" id="lock">
+<div class="lock" id="lock">
   <div class="time" id="time"></div>
   <div class="unlock" onclick="unlock()">Sblocca</div>
 </div>
 
 <!-- HOME -->
 <div class="home" id="home">
-  <div class="app" onclick="openMusic()">Musica</div>
+
+  <div class="app-icon" onclick="openMusic()">
+    <div class="icon-box music-icon">🎵</div>
+    Musica
+  </div>
+
 </div>
 
 <!-- MUSIC APP -->
-<div class="music" id="music">
+<div class="music-app" id="music">
 
 <div class="back" onclick="goHome()">← Home</div>
-<h2>Musica</h2>
+<h2>Ascolta ora</h2>
 
-<!-- LISTA CANZONI -->
-<div id="songList"></div>
+<div id="albums"></div>
 
-<!-- PLAYER -->
 <audio id="player" controls>
   <source id="source" src="" type="audio/mpeg">
 </audio>
@@ -180,82 +204,49 @@ function goHome(){
   document.getElementById("home").style.display="block";
 }
 
-//////////////////////////////////////////////////////////////
-// 🎧 QUI INSERISCI LE TUE CANZONI
-//////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+// 🎧 QUI METTI LE TUE CANZONI
+////////////////////////////////////////////////////
 
 const songs = [
 
 /*
-⚠️ COME AGGIUNGERE CANZONI:
+👇 COME USARE:
 
-- title: nome canzone
-- artist: artista
-- src: LINK MP3
-- cover: LINK IMMAGINE
-
-ESEMPIO:
-{
-  title: "Nome",
-  artist: "Artista",
-  src: "https://link.mp3",
-  cover: "https://link.jpg"
-},
+title: nome canzone
+artist: artista
+src: link mp3
+cover: link immagine copertina
 */
 
 {
   title: "Idee Valide",
-  artist: "Marticagna",
-  src: "https://raw.githubusercontent.com/mondezzarara/music-storage/main/IdeeValide.mp3",
-  cover: "https://raw.githubusercontent.com/mondezzarara/image-storage/main/IMG_0355.jpg"
-},
+  artist: "Tu",
+  src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  cover: "https://picsum.photos/400?random=1"
+}
 
-
-  title: "Song 2",
-  artist: "Artista",
-  src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-  cover: "https://picsum.photos/200?2"
-},
-
-// 👉 DUPLICA QUESTO BLOCCO FINO A 20 CANZONI
-
-  title: "Song 3",
-  artist: "Artista",
-  src: "LINK_MP3",
-  cover: "LINK_IMMAGINE"
-},
-
-
-  title: "Song 4",
-  artist: "Artista",
-  src: "LINK_MP3",
-  cover: "LINK_IMMAGINE"
-},
-
-// continua fino a 20...
 ];
 
-//////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////
 
-// CREA LISTA
+// CREA LISTA STILE APPLE MUSIC
 function loadSongs(){
-  const list=document.getElementById("songList");
+  const container=document.getElementById("albums");
 
-  songs.forEach((song)=>{
+  songs.forEach(song=>{
     const div=document.createElement("div");
-    div.className="song";
+    div.className="album";
 
     div.innerHTML=`
       <img src="${song.cover}">
-      <div>
-        <div class="song-title">${song.title}</div>
-        <div style="font-size:12px;color:#aaa">${song.artist}</div>
-      </div>
+      <div class="album-title">${song.title}</div>
+      <div class="album-artist">${song.artist}</div>
     `;
 
     div.onclick=()=>playSong(song.src);
 
-    list.appendChild(div);
+    container.appendChild(div);
   });
 }
 
@@ -265,7 +256,7 @@ function playSong(src){
   const source=document.getElementById("source");
 
   source.src=src;
-  player.load();   // 🔥 fondamentale
+  player.load();
   player.play();
 }
 
