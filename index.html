@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>iPhone Simulator</title>
+
 <style>
 body {
   margin: 0;
@@ -11,18 +12,17 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
 }
+
 .iphone {
   width: 300px;
   height: 600px;
   border-radius: 40px;
   background: black;
   padding: 10px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.8);
-  position: relative;
-  overflow: hidden;
 }
+
 .screen {
   width: 100%;
   height: 100%;
@@ -30,6 +30,8 @@ body {
   overflow: hidden;
   position: relative;
 }
+
+/* LOCK */
 .lock-screen {
   position: absolute;
   width: 100%;
@@ -41,15 +43,21 @@ body {
   justify-content: space-between;
   text-align: center;
 }
-.time { font-size: 40px; margin-top: 40px; }
+
+.time {
+  font-size: 40px;
+  margin-top: 40px;
+}
+
 .unlock {
   background: rgba(255,255,255,0.2);
   margin: 20px;
   padding: 10px;
   border-radius: 20px;
   cursor: pointer;
-  user-select: none;
 }
+
+/* HOME */
 .home {
   display: none;
   position: absolute;
@@ -57,13 +65,14 @@ body {
   height: 100%;
   background: linear-gradient(#3a7bd5, #00d2ff);
   padding: 20px;
-  box-sizing: border-box;
 }
+
 .apps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
 }
+
 .app {
   background: white;
   border-radius: 15px;
@@ -73,9 +82,9 @@ body {
   align-items: center;
   font-size: 12px;
   cursor: pointer;
-  text-align: center;
-  user-select: none;
 }
+
+/* APP */
 .app-screen {
   display: none;
   position: absolute;
@@ -83,136 +92,94 @@ body {
   height: 100%;
   background: white;
   padding: 20px;
-  box-sizing: border-box;
-  overflow: auto;
 }
+
 .back {
   position: absolute;
   top: 10px;
   left: 10px;
   cursor: pointer;
   color: blue;
-  font-weight: bold;
 }
-textarea { width: 100%; height: 80%; }
-ul { padding-left: 20px; }
-li { margin: 10px 0; cursor: pointer; color: #007aff; list-style: none; }
-li:hover { text-decoration: underline; }
-audio { width: 100%; margin-top: 20px; }
 </style>
+
 </head>
 <body>
 
 <div class="iphone">
   <div class="screen">
 
-    <!-- LOCK SCREEN -->
+    <!-- LOCK -->
     <div class="lock-screen" id="lock">
-      <div class="time" id="time">12:00</div>
+      <div class="time" id="time"></div>
       <div class="unlock" onclick="unlock()">Scorri per sbloccare</div>
     </div>
 
-    <!-- HOME SCREEN -->
+    <!-- HOME -->
     <div class="home" id="home">
       <div class="apps">
-        <div class="app" onclick="openApp('telefono')">Telefono</div>
-        <div class="app" onclick="openApp('messaggi')">Messaggi</div>
-        <div class="app" onclick="openApp('foto')">Foto</div>
-        <div class="app" onclick="openApp('note')">Note</div>
         <div class="app" onclick="openApp('musica')">Musica</div>
       </div>
     </div>
 
-    <!-- APP TELEFONO -->
-    <div class="app-screen" id="telefono">
-      <div class="back" onclick="goHome()">← Home</div>
-      <h2>Telefono</h2>
-      <p>Qui potrai aggiungere chiamate in futuro</p>
-    </div>
-
-    <!-- APP MESSAGGI -->
-    <div class="app-screen" id="messaggi">
-      <div class="back" onclick="goHome()">← Home</div>
-      <h2>Messaggi</h2>
-      <p>Chat in arrivo...</p>
-    </div>
-
-    <!-- APP FOTO -->
-    <div class="app-screen" id="foto">
-      <div class="back" onclick="goHome()">← Home</div>
-      <h2>Foto</h2>
-      <p>Galleria vuota</p>
-    </div>
-
-    <!-- APP NOTE -->
-    <div class="app-screen" id="note">
-      <div class="back" onclick="goHome()">← Home</div>
-      <h2>Note</h2>
-      <textarea placeholder="Scrivi qui le tue note..."></textarea>
-    </div>
-
-    <!-- APP MUSICA -->
+    <!-- MUSICA -->
     <div class="app-screen" id="musica">
-      <div class="back" onclick="goHome()">← Home</div>
+      <div class="back" onclick="goHome()">←</div>
       <h2>Musica</h2>
-      <p>Seleziona una canzone:</p>
-      <ul id="songList"></ul>
-      <audio id="player" controls></audio>
+
+      <p>Tocca per riprodurre:</p>
+      <div onclick="playSong()" style="color:blue;cursor:pointer;">
+        ▶ Idee Valide
+      </div>
+
+      <audio id="player" controls style="width:100%;margin-top:20px;">
+        <source id="source" src="" type="audio/mpeg">
+      </audio>
     </div>
 
   </div>
 </div>
 
 <script>
-// ORARIO DINAMICO
+
+// ORARIO
 function updateTime() {
-  const now = new Date();
-  const h = now.getHours().toString().padStart(2,'0');
-  const m = now.getMinutes().toString().padStart(2,'0');
+  let now = new Date();
+  let h = now.getHours().toString().padStart(2,'0');
+  let m = now.getMinutes().toString().padStart(2,'0');
   document.getElementById("time").innerText = h + ":" + m;
 }
-setInterval(updateTime, 1000);
+setInterval(updateTime,1000);
 updateTime();
 
 // SBLOCCO
-function unlock() {
-  document.getElementById("lock").style.display = "none";
-  document.getElementById("home").style.display = "block";
-}
-
-// APRI APP
-function openApp(id) {
-  document.getElementById("home").style.display = "none";
-  document.getElementById(id).style.display = "block";
-}
-
-// TORNA ALLA HOME
-function goHome() {
-  document.querySelectorAll(".app-screen").forEach(el => el.style.display="none");
+function unlock(){
+  document.getElementById("lock").style.display="none";
   document.getElementById("home").style.display="block";
 }
 
-// PLAYER DINAMICO
-function loadSongs() {
-  const songFolder = "./musica/";
-  const songs = ["IdeeValide.mp3"]; // Qui aggiungi nuovi file quando li carichi su GitHub
-  const list = document.getElementById("songList");
-  songs.forEach(file => {
-    const li = document.createElement("li");
-    li.textContent = file.replace(".mp3","");
-    li.onclick = () => playSong(file);
-    list.appendChild(li);
-  });
+// NAV
+function openApp(id){
+  document.getElementById("home").style.display="none";
+  document.getElementById(id).style.display="block";
 }
 
-function playSong(file) {
+function goHome(){
+  document.querySelectorAll(".app-screen").forEach(el=>el.style.display="none");
+  document.getElementById("home").style.display="block";
+}
+
+// 🎵 PLAYER SICURO
+function playSong(){
   const player = document.getElementById("player");
-  player.src = "./musica/" + file;
+  const source = document.getElementById("source");
+
+  source.src = "musica/IdeeValide.mp3";
+
+  player.load();   // 🔥 fondamentale su iPad
   player.play();
 }
 
-// Inizializza lista canzoni
-loadSongs();
 </script>
 
 </body>
